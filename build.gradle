@@ -1,0 +1,38 @@
+plugins {
+    id "java"
+    id "application"
+}
+application {
+    mainClassName = "gui.main"
+}
+task fatJar(type: Jar) {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.version,
+                "Main-Class": "gui.main"
+        )
+    }
+    outputs.upToDateWhen { false }
+    project.archivesBaseName = "ServerChecker"
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    with jar
+}
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
+}
+dependencies {
+    compile "com.google.code.gson:gson:2.8.6"
+    implementation "com.intellij:forms_rt:7.0.3"
+    compile group: "org.swinglabs.swingx", name: "swingx-core", version: "1.6.5-1"
+    implementation "com.formdev:flatlaf:0.38"
+}
+
+
