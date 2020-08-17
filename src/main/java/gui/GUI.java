@@ -17,7 +17,6 @@ public class GUI {
     }
 
     private void checkButtonPressed()  {
-        errorLabel.setText("");
         String ip = inputIP.getText();
 
         if(Domain.isDomain(ip)){
@@ -33,6 +32,7 @@ public class GUI {
         try {
             ResponsePacket output = ServerScraper.fetch(ip);
             verText.setText(output.version.name);
+            errorLabel.setText("");
         } catch (IOException e) {
             e.printStackTrace();
             verText.setText("");
@@ -55,10 +55,10 @@ public class GUI {
             mainFrameContentPane.setLayout(new GridLayoutManager(3, 4, new Insets(0, 0, 0, 0), -1, -1));
 
             //---- inputIP ----
-            inputIP.setMinimumSize(new Dimension(200, 30));
+            inputIP.setMinimumSize(new Dimension(250, 30));
             PromptSupport.setPrompt("enter IP",inputIP);
 
-            mainFrameContentPane.add(inputIP, new GridConstraints(0, 0, 1, 2,
+            mainFrameContentPane.add(inputIP, new GridConstraints(0, 0, 1, 3,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -84,10 +84,10 @@ public class GUI {
                 null, null, null));
 
             //---- verText ----
-            verText.setMinimumSize(new Dimension(140, 30));
+            verText.setMinimumSize(new Dimension(150, 30));
             verText.setEditable(false);
             mainFrameContentPane.add(verText, new GridConstraints(1, 1, 1, 1,
-                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 null, null, null));

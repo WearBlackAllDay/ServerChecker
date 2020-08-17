@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import java.io.ByteArrayOutputStream;
@@ -84,6 +83,9 @@ public class ServerScraper {
     }
 
     public static InetSocketAddress resolveAddress(String ip) {
+        String[] s = ip.split(Pattern.quote(":"));
+        if(s.length > 1)return new InetSocketAddress(s[0], Integer.parseInt(s[1]));
+
         try {
             Attribute attribute = DIR_CONTEXT.getAttributes("_minecraft._tcp." + ip, new String[] {"SRV"}).get("srv");
 
