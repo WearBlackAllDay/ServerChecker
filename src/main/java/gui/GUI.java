@@ -19,7 +19,6 @@ public class GUI {
     private void checkButtonPressed()  {
         errorLabel.setText("");
         String ip = inputIP.getText();
-        int port = Domain.getPort(inputPort);
 
         if(Domain.isDomain(ip)){
             try {
@@ -32,7 +31,7 @@ public class GUI {
             }
         }
         try {
-            ResponsePacket output = ServerScraper.fetch(ip,port);
+            ResponsePacket output = ServerScraper.fetch(ip);
             verText.setText(output.version.name);
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,7 +44,6 @@ public class GUI {
         //GEN-BEGIN:initComponents
         mainFrame = new JFrame();
         inputIP = new JTextField();
-        inputPort = new JTextField();
         checkButton = new JButton();
         verLabel = new JLabel();
         verText = new JTextField();
@@ -61,17 +59,6 @@ public class GUI {
             PromptSupport.setPrompt("enter IP",inputIP);
 
             mainFrameContentPane.add(inputIP, new GridConstraints(0, 0, 1, 2,
-                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
-                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                null, null, null));
-
-            //---- inputPort ----
-            inputPort.setMinimumSize(new Dimension(100, 30));
-            inputPort.setToolTipText("if empty, 25565 will be used");
-            PromptSupport.setPrompt("enter Port",inputPort);
-
-            mainFrameContentPane.add(inputPort, new GridConstraints(0, 2, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -121,7 +108,6 @@ public class GUI {
     //GEN-BEGIN:variables
     public JFrame mainFrame;
     public JTextField inputIP;
-    public JTextField inputPort;
     public JButton checkButton;
     public JLabel verLabel;
     public JTextField verText;

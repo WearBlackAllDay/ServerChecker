@@ -4,9 +4,9 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 
-public class main {
-    public static void main(String[] args) {
+public class ServerChecker {
 
+    public static void main(String[] args) {
         FlatLightLaf.install();
         try {
             UIManager.setLookAndFeel(new FlatDarculaLaf());
@@ -19,4 +19,5 @@ public class main {
         main.setTitle("ServerChecker");
         main.pack();
     }
+
 }

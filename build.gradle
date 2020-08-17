@@ -3,14 +3,14 @@ plugins {
     id "application"
 }
 application {
-    mainClassName = "gui.main"
+    mainClassName = "gui.ServerChecker"
 }
 task fatJar(type: Jar) {
     manifest {
         attributes(
                 "Implementation-Title": project.name,
                 "Implementation-Version": project.version,
-                "Main-Class": "gui.main"
+                "Main-Class": "gui.ServerChecker"
         )
     }
     outputs.upToDateWhen { false }

@@ -1,37 +1,50 @@
 package handshake;
 
 import com.google.gson.Gson;
+
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Hashtable;
+import java.util.regex.Pattern;
 
 public class ServerScraper {
 
     private static final Gson GSON = new Gson();
+    private static DirContext DIR_CONTEXT;
 
-    /*public static void main(String[] args) throws IOException {
-        handshake.ResponsePacket packet = handshake.ServerScraper.fetch("51.161.38.45");
-        System.out.println(packet.version.name);
+    static {
+        Hashtable<String, String> TABLE = new Hashtable<>();
+        TABLE.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
+        TABLE.put("java.naming.provider.url", "dns:");
+        TABLE.put("com.sun.jndi.dns.timeout.retries", "1");
+
+        try {
+            DIR_CONTEXT = new InitialDirContext(TABLE);
+        } catch(NamingException e) {
+            e.printStackTrace();
+        }
     }
 
     public static ResponsePacket fetch(String ip) throws IOException {
-        return fetch(ip, 25565);
-    }*/
-
-    public static ResponsePacket fetch(String ip, int host) throws IOException {
-        InetSocketAddress address = new InetSocketAddress(ip, host);
+        InetSocketAddress address = resolveAddress(ip);
 
         Socket socket = new Socket();
-        socket.connect(address, 7000);
+        socket.connect(address, 2000);
 
         DataOutputStream inStream = new DataOutputStream(socket.getOutputStream());
         DataInputStream outStream = new DataInputStream(socket.getInputStream());
         ByteArrayOutputStream handshakeStream = new ByteArrayOutputStream();
         DataOutputStream handshake = new DataOutputStream(handshakeStream);
-        handshake.writeByte(0x00);
+        handshake.writeByte(0);
         writeInt(handshake, 4);
         writeInt(handshake, address.getHostString().length());
         handshake.writeBytes(address.getHostString());
@@ -41,8 +54,8 @@ public class ServerScraper {
         writeInt(inStream, handshakeStream.size());
 
         inStream.write(handshakeStream.toByteArray());
-        inStream.writeByte(0x01);
-        inStream.writeByte(0x00);
+        inStream.writeByte(1);
+        inStream.writeByte(0);
 
         readInt(outStream);
         readInt(outStream);
@@ -51,8 +64,8 @@ public class ServerScraper {
         outStream.readFully(bytes);
         String json = new String(bytes);
 
-        inStream.writeByte(0x09);
-        inStream.writeByte(0x01);
+        inStream.writeByte(9);
+        inStream.writeByte(1);
         inStream.writeLong(System.currentTimeMillis());
 
         readInt(outStream);
@@ -68,6 +81,20 @@ public class ServerScraper {
         response.rawJson = json;
         response.ping = System.currentTimeMillis() - pingTime;
         return response;
+    }
+
+    public static InetSocketAddress resolveAddress(String ip) {
+        try {
+            Attribute attribute = DIR_CONTEXT.getAttributes("_minecraft._tcp." + ip, new String[] {"SRV"}).get("srv");
+
+            if(attribute != null) {
+                String[] data = attribute.get().toString().split(Pattern.quote(" "), 4);
+                return new InetSocketAddress(data[3], Integer.parseInt(data[2]));
+            }
+        } catch(NamingException | NumberFormatException ignored) {
+        }
+
+        return new InetSocketAddress(ip, 25565);
     }
 
     public static int readInt(DataInputStream packet) throws IOException {
