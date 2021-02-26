@@ -1,7 +1,5 @@
 # ServerChecker
-a quick tool to check a servers version/build from IP
+a quick tool to check a servers version/build from IP,
+build with "./gradlew build".
 
-Build with "./gradlew fatjar"
-
-Tools for different information from IP can be found in "handshake" directory
-
+If you wish to scrape information other than what is provided by the Gui, create your own `ResponsePacket` Object from `ServerScraper.java`. 
