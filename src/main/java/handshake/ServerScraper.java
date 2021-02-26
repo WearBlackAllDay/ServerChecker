@@ -83,7 +83,8 @@ public class ServerScraper {
     }
 
     public static InetSocketAddress resolveAddress(String ip) {
-        String[] s = ip.split(Pattern.quote(":"));
+        String in = ip.replaceAll(" ", "");
+        String[] s = in.split(Pattern.quote(":"));
         if(s.length > 1)return new InetSocketAddress(s[0], Integer.parseInt(s[1]));
 
         try {

@@ -30,5 +30,4 @@ public class ResponsePacket {
         public String name;
         public int protocol;
     }
-
 }
