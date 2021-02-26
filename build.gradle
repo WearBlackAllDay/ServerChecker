@@ -16,7 +16,7 @@ dependencies {
 application {
     mainClassName = "ServerChecker"
 }
-version "1.0"
+version "1.2"
 task fatJar(type: Jar) {
     manifest {
         attributes(
