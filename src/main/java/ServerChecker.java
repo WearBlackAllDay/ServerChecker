@@ -19,14 +19,11 @@ public class ServerChecker extends JFrame {
         JTextField output = new JTextField();
         JLabel errorLabel = new JLabel();
 
-        output.setEditable(false);
-        errorLabel.setForeground(Color.RED);
-
         this.setContentPane(new CustomPanel(new GridLayout(2, 2), 250, 30).
                 addTextField("enter IP", "ip").
-                addButton("check", (button, event) -> {
+                addButton("check", (panel, button, event) -> {
                     try {
-                        ResponsePacket packet = ServerScraper.fetch(((CustomPanel)button.getParent()).getText("ip"));
+                        ResponsePacket packet = ServerScraper.fetch(panel.getText("ip"));
                         output.setText(packet.version.name);
                         errorLabel.setText("");
                     } catch (IOException e) {
@@ -35,8 +32,8 @@ public class ServerChecker extends JFrame {
                         errorLabel.setText("invalid IP");
                     }
                 }).
-                addComponent(() -> output).
-                addComponent(() -> errorLabel));
+                addComponent(() -> output, (panel, text) -> text.setEditable(false)).
+                addComponent(() -> errorLabel, (panel, label) -> label.setForeground(Color.RED)));
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("ServerChecker");

@@ -11,7 +11,7 @@ repositories {
 dependencies {
     compile "com.google.code.gson:gson:2.8.6"
     implementation "com.formdev:flatlaf:0.38"
-    implementation 'com.github.WearBlackAllDay:JavaUtils:65fae8ce2a49acaa1e3e9df31239b37040bf6f32'
+    implementation 'com.github.WearBlackAllDay:JavaUtils:b664d77b04dfda57d7b5e36cf0335209f13ffc7f'
 }
 application {
     mainClassName = "ServerChecker"
