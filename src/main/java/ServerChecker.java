@@ -22,7 +22,7 @@ public class ServerChecker extends JFrame {
         output.setEditable(false);
         errorLabel.setForeground(Color.RED);
 
-        CustomPanel customPanel = new CustomPanel(new GridLayout(2, 2), 250, 30).
+        this.setContentPane(new CustomPanel(new GridLayout(2, 2), 250, 30).
                 addTextField("enter IP", "ip").
                 addButton("check", (button, event) -> {
                     try {
@@ -36,8 +36,7 @@ public class ServerChecker extends JFrame {
                     }
                 }).
                 addComponent(() -> output).
-                addComponent(() -> errorLabel);
-        this.setContentPane(customPanel);
+                addComponent(() -> errorLabel));
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("ServerChecker");
