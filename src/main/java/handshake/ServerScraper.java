@@ -10,8 +10,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Hashtable;
 import java.util.regex.Pattern;
 
@@ -82,10 +84,17 @@ public class ServerScraper {
         return response;
     }
 
-    public static InetSocketAddress resolveAddress(String ip) {
-        String in = ip.replaceAll(" ", "");
-        String[] s = in.split(Pattern.quote(":"));
-        if(s.length > 1)return new InetSocketAddress(s[0], Integer.parseInt(s[1]));
+    private static InetSocketAddress resolveAddress(String ip) {
+        ip = ip.trim();
+        if (ip.matches("[a-zA-Z]+")) {
+            try {
+                ip = InetAddress.getByName(ip).toString();
+            } catch (UnknownHostException e) {
+                System.out.println("Domain not recognized");
+            }
+        }
+        String[] s = ip.split(":");
+        if(s.length > 1) return new InetSocketAddress(s[0], Integer.parseInt(s[1]));
 
         try {
             Attribute attribute = DIR_CONTEXT.getAttributes("_minecraft._tcp." + ip, new String[] {"SRV"}).get("srv");
@@ -96,11 +105,10 @@ public class ServerScraper {
             }
         } catch(NamingException | NumberFormatException ignored) {
         }
-
         return new InetSocketAddress(ip, 25565);
     }
 
-    public static int readInt(DataInputStream packet) throws IOException {
+    private static int readInt(DataInputStream packet) throws IOException {
         int i, j;
 
         for(i = 0, j = 0; ;) {
@@ -113,7 +121,7 @@ public class ServerScraper {
         return i;
     }
 
-    public static void writeInt(DataOutputStream packet, int value) throws IOException {
+    private static void writeInt(DataOutputStream packet, int value) throws IOException {
         while(true) {
             if ((value & 0xFFFFFF80) == 0) {
                 packet.writeByte(value);
@@ -124,5 +132,4 @@ public class ServerScraper {
             value >>>= 7;
         }
     }
-
 }
